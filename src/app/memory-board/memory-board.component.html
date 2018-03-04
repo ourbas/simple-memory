@@ -1,0 +1,8 @@
+<p>
+  memory-board works! board initialized: {{ (initialized$ | async) ? 'yes' : 'no' }}
+</p>
+
+<div *ngIf="initialized$ | async">
+  <app-memory-card *ngFor="let card of (cards$ | async)" [card]="card">
+  </app-memory-card>
+</div>
