@@ -1,6 +1,4 @@
-<p>
-  initialized: {{ (initialized$ | async) ? 'yes' : 'no'}}
-  <div *ngIf="initialized$ | async" class="board-container">
-    <app-memory-card *ngFor="let card of (cards$ | async)" [card]="card" (select)="onSelect($event)">
-    </app-memory-card>
-  </div>
+<div *ngIf="initialized$ | async" class="board-container">
+  <app-memory-card *ngFor="let card of (cards$ | async)" [card]="card" (select)="onSelect($event)">
+  </app-memory-card>
+</div>

@@ -1,5 +1,5 @@
-import * as fromMemory from './memory.actions';
-import { Card } from '../models/card.model';
+import * as fromActions from './memory.actions';
+import { Card, Board } from '../models/card.model';
 import { ActionReducerMap } from '@ngrx/store';
 
 export interface State {
@@ -14,23 +14,23 @@ export const reducers: ActionReducerMap<State> = {
 
 // TODO: featurize?
 export interface MemoryState {
-  board: Card[];
+  board: Board;
   revealedCards: number[];
   initialized: boolean;
 }
 
 export const initialState: MemoryState = {
-  board: [],
+  board: {},
   revealedCards: [],
   initialized: false,
 };
 
 export function reducer(
   state = initialState,
-  action: fromMemory.MemoryAction
+  action: fromActions.MemoryAction
 ): MemoryState {
   switch (action.type) {
-    case fromMemory.INIT_GAME: {
+    case fromActions.INIT_GAME: {
       const res = {
         ...state,
         board: setupBoard(),
@@ -38,7 +38,41 @@ export function reducer(
       };
       return res;
     }
+
+    case fromActions.REVEAL_CARD: {
+      const pos = action.payload;
+      const board = {
+        ...state.board,
+        [pos]: {
+          ...state.board[pos],
+          faceUp: true,
+        },
+      };
+      return {
+        ...state,
+        board,
+        revealedCards: [...state.revealedCards, pos],
+      };
+    }
+
+    case fromActions.RESET_CARDS: {
+      const board = state.revealedCards.reduce(
+        (acc, pos) => {
+          return {
+            ...acc,
+            [pos]: { ...state.board[pos], faceUp: false },
+          };
+        },
+        { ...state.board }
+      );
+      return {
+        ...state,
+        board,
+        revealedCards: [],
+      };
+    }
   }
+
   return { ...state };
 }
 export const getBoard = (state: MemoryState) => state.board;
@@ -48,18 +82,18 @@ export const getInitialized = (state: MemoryState) => state.initialized;
 const cardPool = 'AABBCCDDEEFFGGHHIIJJ'.split('');
 
 // TODO: Move to a Effect?
-function setupBoard(): Card[] {
-  const randValues = shuffleArray(cardPool);
-  const res: Card[] = [];
-  for (let pos = 1; pos <= 20; pos++) {
-    res.push({
-      pos: pos,
-      value: randValues.pop(),
-      faceUp: false,
-      pairFounded: false,
-    });
-  }
-  return res;
+function setupBoard(): Board {
+  return shuffleArray(cardPool).reduce((acc: Board, value, index) => {
+    return {
+      ...acc,
+      [index]: {
+        pos: index,
+        value: value,
+        faceUp: false,
+        pairFounded: false,
+      },
+    };
+  }, {});
 }
 
 function shuffleArray(input: string[]): string[] {

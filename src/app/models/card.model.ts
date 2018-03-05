@@ -4,3 +4,7 @@ export interface Card {
   faceUp: boolean;
   pairFounded: boolean;
 }
+
+export interface Board {
+  [key: number]: Card;
+}

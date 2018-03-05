@@ -15,9 +15,9 @@ export class RevealCard implements Action {
 
 export const RESET_CARDS = 'Reset unmatched Cards face down';
 export class ResetCards implements Action {
-  readonly type = REVEAL_CARD;
+  readonly type = RESET_CARDS;
   constructor() {}
 }
 
 // action types
-export type MemoryAction = InitGame;
+export type MemoryAction = InitGame | RevealCard | ResetCards;

@@ -28,7 +28,7 @@ const cardC: Card = {
 };
 
 describe('Memory selectors', () => {
-  let store: Store<fromMemory.MemoryState>;
+  let store: Store<fromMemory.State>;
   const board = [cardA, cardB, cardC];
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -40,6 +40,14 @@ describe('Memory selectors', () => {
     spyOn(store, 'dispatch').and.callThrough();
   });
 
-  // TODO
-  describe('getBoard selector', () => {});
+  describe('Memory Selectors', () => {
+    it('selector should return 3', () => {
+      const previousState: fromMemory.MemoryState = {
+        ...fromMemory.initialState,
+        board: { 1: cardA, 2: cardB, 3: cardC },
+      };
+      const slice = fromMemory.getAllCards({ memory: previousState });
+      expect(Object.keys(slice).length).toBe(3);
+    });
+  });
 });

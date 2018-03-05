@@ -1,0 +1,13 @@
+.card {
+  display: flex;
+  width: 100px;
+  height: 100px;
+  margin: 4px;
+  border: 4px solid lightgray;
+  background-color: skyblue;
+  box-sizing: border-box;
+}
+
+.paired {
+  border-color: lawngreen !important;
+}

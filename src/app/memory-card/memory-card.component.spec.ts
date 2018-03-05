@@ -24,4 +24,9 @@ describe('MemoryCardComponent', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
+
+  // it('should display an image when faceup', () => {
+  //   component.card = { pos: 5, faceUp: true, pairFounded: false, value: 'Z' };
+  //   fixture.detectChanges();
+  // });
 });

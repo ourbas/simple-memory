@@ -20,12 +20,12 @@ export class MemoryBoardComponent implements OnInit {
   constructor(private store: Store<fromStore.State>) {}
 
   ngOnInit() {
-    this.cards$ = this.store.select(fromStore.getMemoryBoard);
+    this.cards$ = this.store.select(fromStore.getAllCards);
     this.initialized$ = this.store.select(fromStore.getMemoryInitialized);
     this.store.dispatch(new fromStore.InitGame());
   }
 
   onSelect(event: number) {
-    // this.store.dispatch(new fromStore.CardSelected(pos));
+    this.store.dispatch(new fromStore.RevealCard(event));
   }
 }

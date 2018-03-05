@@ -1,5 +1,5 @@
-<div (click)="onClick()">
-  <p>
-    {{ card.value }}
-  </p>
+<div class="card" [ngClass]="{'paired': card.pairFounded}" (click)="onClick()">
+
+  <img *ngIf="card.faceUp" [src]=" 'assets/images/' + card.value + '.jpg' " />
+
 </div>
