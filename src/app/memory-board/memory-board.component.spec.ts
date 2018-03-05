@@ -27,7 +27,9 @@ describe('MemoryBoardComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create and iniitalized correctly', () => {
     expect(component).toBeTruthy();
+    component.initialized$.subscribe(i => expect(i).toBe(true));
+    component.cards$.subscribe(c => expect(c.length).toBe(20));
   });
 });
