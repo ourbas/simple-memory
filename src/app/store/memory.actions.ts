@@ -7,17 +7,23 @@ export class InitGame implements Action {
   readonly type = INIT_GAME;
 }
 
-export const REVEAL_CARD = 'Reveal a Card';
+export const REVEAL_CARD = 'Reveal a Card faceUp';
 export class RevealCard implements Action {
   readonly type = REVEAL_CARD;
   constructor(public payload: number) {}
 }
 
-export const RESET_CARDS = 'Reset unmatched Cards face down';
+export const REVEAL_PAIR = 'Reveal a matching pair of Cards face up';
+export class RevealPair implements Action {
+  readonly type = REVEAL_PAIR;
+  constructor(public payload: number[]) {}
+}
+
+export const RESET_PAIR = 'Reset unmatched pair of Cards face down';
 export class ResetCards implements Action {
-  readonly type = RESET_CARDS;
-  constructor() {}
+  readonly type = RESET_PAIR;
+  constructor(public payload: number[]) {}
 }
 
 // action types
-export type MemoryAction = InitGame | RevealCard | ResetCards;
+export type MemoryAction = InitGame | RevealCard | RevealPair | ResetCards;

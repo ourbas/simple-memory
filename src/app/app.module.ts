@@ -19,6 +19,7 @@ import { CommonModule } from '@angular/common';
     CommonModule,
     BrowserModule,
     StoreModule.forRoot(fromStore.reducers),
+    // EffectsModule.forRoot([fromStore.MemoryEffects]),
     environment.production ? [] : StoreDevtoolsModule.instrument(),
   ],
   providers: [],

@@ -17,13 +17,13 @@ import { Card } from '../models/card.model';
 export class MemoryCardComponent implements OnInit {
   @Input() card: Card;
 
-  @Output() select: EventEmitter<number> = new EventEmitter();
+  @Output() select: EventEmitter<Card> = new EventEmitter();
 
   constructor() {}
 
   ngOnInit() {}
 
   onClick() {
-    this.select.emit(this.card.pos);
+    this.select.emit(this.card);
   }
 }

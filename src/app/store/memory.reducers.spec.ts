@@ -2,33 +2,6 @@ import * as fromMemory from './index';
 import { InitGame } from './index';
 import { Card } from '../models/card.model';
 
-const cardA: Card = {
-  pos: 1,
-  value: 'A',
-  faceUp: false,
-  pairFounded: false,
-};
-
-const cardB: Card = {
-  pos: 2,
-  value: 'B',
-  faceUp: false,
-  pairFounded: false,
-};
-
-const cardC: Card = {
-  pos: 3,
-  value: 'C',
-  faceUp: true,
-  pairFounded: true,
-};
-
-const previousState: fromMemory.MemoryState = {
-  board: { 1: cardA, 2: cardB, 3: cardC },
-  revealedCards: [],
-  initialized: true,
-};
-
 describe('Memory reducer', () => {
   describe('undefined action ', () => {
     it('should return the default state', () => {
@@ -40,7 +13,14 @@ describe('Memory reducer', () => {
   describe('INIT_GAME action ', () => {
     it('should setup board', () => {
       const action = new fromMemory.InitGame();
-      const state = fromMemory.reducer(previousState, action);
+      const state = fromMemory.reducer(
+        {
+          board: {},
+          revealedCards: [],
+          initialized: true,
+        },
+        action
+      );
 
       expect(Object.keys(state.board).length).toBe(20);
       expect(state.initialized).toBe(true);
@@ -48,7 +28,19 @@ describe('Memory reducer', () => {
   });
   describe('REVEAL_CARD action ', () => {
     const action = new fromMemory.RevealCard(1);
-    const state = fromMemory.reducer(previousState, action);
+
+    const state = fromMemory.reducer(
+      {
+        board: {
+          1: { pos: 1, value: 'A', faceUp: false, pairFounded: false },
+          2: { pos: 2, value: 'B', faceUp: false, pairFounded: false },
+          3: { pos: 3, value: 'C', faceUp: false, pairFounded: false },
+        },
+        revealedCards: [],
+        initialized: true,
+      },
+      action
+    );
     it('should turn card 1 faceup', () => {
       expect(state.board[1].faceUp).toBeTruthy();
     });
@@ -57,10 +49,40 @@ describe('Memory reducer', () => {
     });
   });
 
-  describe('RESET_CARDS action ', () => {
-    const action = new fromMemory.ResetCards();
+  describe('REVEAL_PAIR action ', () => {
+    const action = new fromMemory.RevealPair([2, 3]);
     const state = fromMemory.reducer(
-      { ...previousState, revealedCards: [1, 3] },
+      {
+        board: {
+          1: { pos: 1, value: 'A', faceUp: true, pairFounded: false },
+          2: { pos: 2, value: 'B', faceUp: true, pairFounded: false },
+          3: { pos: 3, value: 'C', faceUp: true, pairFounded: false },
+        },
+        revealedCards: [2, 3],
+        initialized: true,
+      },
+      action
+    );
+    it('should set card 2 as founded', () => {
+      expect(state.board[2].pairFounded).toBeTruthy();
+    });
+    it('should clean revealedCards', () => {
+      expect(state.revealedCards.length).toBe(0);
+    });
+  });
+
+  describe('RESET_CARDS action ', () => {
+    const action = new fromMemory.ResetCards([1, 3]);
+    const state = fromMemory.reducer(
+      {
+        board: {
+          1: { pos: 1, value: 'A', faceUp: false, pairFounded: true },
+          2: { pos: 2, value: 'B', faceUp: false, pairFounded: true },
+          3: { pos: 3, value: 'C', faceUp: false, pairFounded: true },
+        },
+        revealedCards: [1, 3],
+        initialized: true,
+      },
       action
     );
     it('should turn card 3 facedown', () => {

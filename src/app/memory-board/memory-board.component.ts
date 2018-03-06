@@ -14,18 +14,46 @@ import 'rxjs/add/observable/of';
   styleUrls: ['./memory-board.component.scss'],
 })
 export class MemoryBoardComponent implements OnInit {
-  cards$: Observable<Card[]> = Observable.of([]);
+  cards$: Observable<Card[]>;
   initialized$: Observable<boolean>;
+
+  revealedCards: Card[];
 
   constructor(private store: Store<fromStore.State>) {}
 
   ngOnInit() {
     this.cards$ = this.store.select(fromStore.getAllCards);
     this.initialized$ = this.store.select(fromStore.getMemoryInitialized);
+
+    this.store
+      .select(fromStore.getRevealedCardsDetails)
+      .subscribe(rc => (this.revealedCards = rc));
+
     this.store.dispatch(new fromStore.InitGame());
   }
 
-  onSelect(event: number) {
-    this.store.dispatch(new fromStore.RevealCard(event));
+  onSelect(event: Card) {
+    // TODO Move to Effect
+
+    if (this.revealedCards.length === 2) {
+      // RESET pair that doesn't match
+      this.store.dispatch(
+        new fromStore.ResetCards(this.revealedCards.map(c => c.pos))
+      );
+    } else if (
+      this.revealedCards.length === 1 &&
+      this.revealedCards.filter(c => c.value === event.value).length > 0
+    ) {
+      // Pair founded!
+      this.store.dispatch(
+        new fromStore.RevealPair([
+          ...this.revealedCards.map(c => c.pos),
+          event.pos,
+        ])
+      );
+    } else {
+      // Reveal a card
+      this.store.dispatch(new fromStore.RevealCard(event.pos));
+    }
   }
 }

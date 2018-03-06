@@ -41,6 +41,10 @@ export function reducer(
 
     case fromActions.REVEAL_CARD: {
       const pos = action.payload;
+      // Check that card isn't faceup already
+      if (state.board[pos].faceUp) {
+        break;
+      }
       const board = {
         ...state.board,
         [pos]: {
@@ -55,16 +59,41 @@ export function reducer(
       };
     }
 
-    case fromActions.RESET_CARDS: {
-      const board = state.revealedCards.reduce(
-        (acc, pos) => {
-          return {
-            ...acc,
-            [pos]: { ...state.board[pos], faceUp: false },
-          };
+    case fromActions.REVEAL_PAIR: {
+      const pair = action.payload;
+      const board = {
+        ...state.board,
+        [pair[0]]: {
+          ...state.board[pair[0]],
+          pairFounded: true,
         },
-        { ...state.board }
-      );
+        [pair[1]]: {
+          ...state.board[pair[1]],
+          pairFounded: true,
+        },
+      };
+
+      return {
+        ...state,
+        board,
+        revealedCards: [],
+      };
+    }
+
+    case fromActions.RESET_PAIR: {
+      const pair = action.payload;
+      const board = {
+        ...state.board,
+        [pair[0]]: {
+          ...state.board[pair[0]],
+          faceUp: false,
+        },
+        [pair[1]]: {
+          ...state.board[pair[1]],
+          faceUp: false,
+        },
+      };
+
       return {
         ...state,
         board,

@@ -7,6 +7,10 @@ export const getMemoryState = createSelector(
   fromReducers.getState,
   (state: fromReducers.State) => state.memory
 );
+export const getMemoryInitialized = createSelector(
+  getMemoryState,
+  fromReducers.getInitialized
+);
 
 export const getMemoryBoard = createSelector(
   getMemoryState,
@@ -21,7 +25,11 @@ export const getMemoryRevealedCards = createSelector(
   getMemoryState,
   fromReducers.getRevealedCards
 );
-export const getMemoryInitialized = createSelector(
+
+export const getRevealedCardsDetails = createSelector(
   getMemoryState,
-  fromReducers.getInitialized
+  getMemoryRevealedCards,
+  (state, cards) => {
+    return cards.map(pos => state.board[pos]);
+  }
 );
